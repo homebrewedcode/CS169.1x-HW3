@@ -1,18 +1,26 @@
 class MoviesController < ApplicationController
     def index
-        sort_order = params[:sort_by]
+        unless params[:sort_by].nil?
+            session[:sort_by] = params[:sort_by]
+        end
         @all_ratings = ['G','PG','PG-13','R']
+        
         if params[:ratings]
            @checked_ratings = params[:ratings].keys
         else
-            @checked_ratings = 'none'
+            if session[:checked_ratings].nil?
+                @checked_ratings = @all_ratings
+            else
+                @checked_ratings = session[:checked_ratings]
+            end
         end
+        session[:checked_ratings] = @checked_ratings
         
-        if sort_order == 'title'
-            @movies = Movie.order(title: :asc)
+        if session[:sort_by] == 'title'
+            @movies = Movie.where("rating IN (?)", @checked_ratings).order(title: :asc)
             @sorted_by = :title
-        elsif sort_order == 'release_date'
-            @movies = Movie.order(release_date: :asc)
+        elsif session[:sort_by] == 'release_date'
+            @movies = Movie.where("rating IN (?)", @checked_ratings).order(release_date: :asc)
             @sorted_by = :release_date
         else
             @movies = Movie.where("rating IN (?)", @checked_ratings)
