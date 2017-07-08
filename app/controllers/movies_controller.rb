@@ -1,6 +1,13 @@
 class MoviesController < ApplicationController
     def index
         sort_order = params[:sort_by]
+        @all_ratings = ['G','PG','PG-13','R']
+        if params[:ratings]
+           @checked_ratings = params[:ratings].keys
+        else
+            @checked_ratings = 'none'
+        end
+        
         if sort_order == 'title'
             @movies = Movie.order(title: :asc)
             @sorted_by = :title
@@ -8,10 +15,9 @@ class MoviesController < ApplicationController
             @movies = Movie.order(release_date: :asc)
             @sorted_by = :release_date
         else
-            @movies = Movie.all
+            @movies = Movie.where("rating IN (?)", @checked_ratings)
             @sorted_by = :none
         end
-        
     end
     
     def show
