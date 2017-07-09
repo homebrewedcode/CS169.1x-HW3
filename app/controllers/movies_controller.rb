@@ -19,9 +19,11 @@ class MoviesController < ApplicationController
         if session[:sort_by] == 'title'
             @movies = Movie.where("rating IN (?)", @checked_ratings).order(title: :asc)
             @sorted_by = :title
+            
         elsif session[:sort_by] == 'release_date'
             @movies = Movie.where("rating IN (?)", @checked_ratings).order(release_date: :asc)
             @sorted_by = :release_date
+            
         else
             @movies = Movie.where("rating IN (?)", @checked_ratings)
             @sorted_by = :none
