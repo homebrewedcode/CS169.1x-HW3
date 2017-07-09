@@ -6,4 +6,5 @@ Rails.application.routes.draw do
   end
   
   root to: redirect('/movies')
+  post '/movies/search_tmdb'
 end
